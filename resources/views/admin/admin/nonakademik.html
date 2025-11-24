@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Dashboard Perpustakaan — Buku Non Akademik</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Core CSS -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+  <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+
+  
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css"/>
+
+  <style>
+    :root {
+      --primary: #001B5A99;
+      --secondary: #001B5A5C;
+      --bg: #FFFFFF;
+      --card-shadow: 0 10px 25px rgba(3, 19, 45, 0.06);
+    }
+
+    body { background: var(--bg); font-family: "Inter", sans-serif; color: #0b1220; }
+
+    .sidebar {
+      background: linear-gradient(180deg, var(--secondary), var(--primary));
+    }
+
+    .sidebar .nav-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateX(6px);
+    }
+
+    .card {
+      border: 0;
+      border-radius: .8rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    table.dataTable thead th {
+      background: rgba(0, 0, 0, 0.03);
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body id="page-top">
+
+<div id="wrapper">
+
+  <!-- Sidebar -->
+  <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-book"></i></div>
+      <div class="sidebar-brand-text mx-2">Perpustakaan</div>
+    </a>
+
+    <hr class="sidebar-divider my-0">
+    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Data Buku</div>
+    <li class="nav-item"><a class="nav-link" href="akademik.html"><i class="fas fa-file"></i> Buku Akademik</a></li>
+    <li class="nav-item active"><a class="nav-link" href="nonakademik.html"><i class="fas fa-book"></i> Buku Non-Akademik</a></li>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Data Users</div>
+    <li class="nav-item"><a class="nav-link" href="users.html"><i class="fas fa-user-graduate"></i> Users</a></li>
+    <li class="nav-item"><a class="nav-link" href="petugas.html"><i class="fas fa-chalkboard-teacher"></i> Petugas</a></li>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Transaksi</div>
+    <li class="nav-item"><a class="nav-link" href="peminjaman.html"><i class="fas fa-hand-holding"></i> Peminjaman</a></li>
+    <li class="nav-item"><a class="nav-link" href="pengembalian.html"><i class="fas fa-undo"></i> Pengembalian</a></li>
+
+    <hr class="sidebar-divider">
+    <li class="nav-item"><a class="nav-link" href="pengaturan.html"><i class="fas fa-cog"></i> Settings</a></li>
+    <li class="nav-item"><a class="nav-link" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+
+
+        <!-- TOPBAR -->
+        <nav class="navbar navbar-expand navbar-light topbar mb-4 shadow">
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link"><span class="mr-2 d-none d-lg-inline text-gray-600 small">Petugas</span></a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- PAGE CONTENT -->
+        <div class="container-fluid">
+
+          <div class="d-flex justify-content-between mb-3">
+            <h4 class="font-weight-bold">Data Buku Non Akademik</h4>
+
+            <!-- BUTTON TAMBAH BUKU -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalTambahNon">
+              <i class="fas fa-plus"></i> Tambah Buku
+            </button>
+          </div>
+
+          <!-- TABLE -->
+          <div class="card shadow mb-4">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" width="100%">
+                 <thead style="background:#f2f2f2; color:#000;">
+
+                    <tr>
+                      <th>No</th>
+                      <th>Kategori</th>
+                      <th>Tipe</th>
+                      <th>Kode Buku</th>
+                      <th>Judul</th>
+                      <th>Penerbit</th>
+                      <th>ISBN</th>
+                      <th>Pengarang</th>
+                      <th>Halaman</th>
+                      <th>Jumlah</th>
+                      <th>Status</th>
+                      <th>Tahun</th>
+                      <th>Sinopsis</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Fiksi</td>
+                      <td>Novel</td>
+                      <td>BK001</td>
+                      <td>Laskar Pelangi</td>
+                      <td>Bentang Pustaka</td>
+                      <td>123456789</td>
+                      <td>Andrea Hirata</td>
+                      <td>500</td>
+                      <td>12</td>
+                      <td>Tersedia</td>
+                      <td>2008</td>
+                      <td>Sinopsis singkat...</td>
+
+                      <td class="text-center">
+
+                        <!-- EDIT -->
+                        <button 
+                          class="btn btn-warning btn-sm"
+                          data-toggle="modal"
+                          data-target="#modalEditNon"
+                          onclick="loadEditNon(
+                            '1',
+                            'Fiksi',
+                            'Novel',
+                            'BK001',
+                            'Laskar Pelangi',
+                            'Bentang Pustaka',
+                            '123456789',
+                            'Andrea Hirata',
+                            500,
+                            12,
+                            'Tersedia',
+                            2008,
+                            'Sinopsis singkat...'
+                          )">
+                          <i class="fas fa-edit"></i>
+                        </button>
+
+                        <!-- DELETE -->
+                        <button class="btn btn-danger btn-sm">
+                          <i class="fas fa-trash"></i>
+                        </button>
+
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto"><div class="copyright text-center">© 2025</div></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH -->
+  <div class="modal fade" id="modalTambahNon">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white"><h5>Tambah Buku Non Akademik</h5></div>
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              Kategori:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-6 mb-2">
+              Tipe:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-4 mb-2">
+              Kode Buku:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-8 mb-2">
+              Judul:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-6 mb-2">
+              Penerbit:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-6 mb-2">
+              ISBN:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-6 mb-2">
+              Pengarang:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-3 mb-2">
+              Halaman:
+              <input type="number" class="form-control">
+            </div>
+            <div class="col-md-3 mb-2">
+              Jumlah:
+              <input type="number" class="form-control">
+            </div>
+            <div class="col-md-4 mb-2">
+              Status:
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-md-4 mb-2">
+              Tahun:
+              <input type="number" class="form-control">
+            </div>
+            <div class="col-md-12 mb-2">
+              Sinopsis:
+              <textarea class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          <button class="btn btn-primary">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT -->
+  <div class="modal fade" id="modalEditNon">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning"><h5>Edit Buku Non Akademik</h5></div>
+        <div class="modal-body">
+
+          <div class="row">
+
+            <div class="col-md-6 mb-2">
+              Kategori:
+              <input type="text" id="editKategori" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-2">
+              Tipe:
+              <input type="text" id="editTipe" class="form-control">
+            </div>
+
+            <div class="col-md-4 mb-2">
+              Kode Buku:
+              <input type="text" id="editKode" class="form-control">
+            </div>
+
+            <div class="col-md-8 mb-2">
+              Judul:
+              <input type="text" id="editJudul" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-2">
+              Penerbit:
+              <input type="text" id="editPenerbit" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-2">
+              ISBN:
+              <input type="text" id="editIsbn" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-2">
+              Pengarang:
+              <input type="text" id="editPengarang" class="form-control">
+            </div>
+
+            <div class="col-md-3 mb-2">
+              Halaman:
+              <input type="number" id="editHalaman" class="form-control">
+            </div>
+
+            <div class="col-md-3 mb-2">
+              Jumlah:
+              <input type="number" id="editJumlah" class="form-control">
+            </div>
+
+            <div class="col-md-4 mb-2">
+              Status:
+              <input type="text" id="editStatus" class="form-control">
+            </div>
+
+            <div class="col-md-4 mb-2">
+              Tahun:
+              <input type="number" id="editTahun" class="form-control">
+            </div>
+
+            <div class="col-md-12 mb-2">
+              Sinopsis:
+              <textarea id="editSinopsis" class="form-control" rows="3"></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          <button class="btn btn-warning">Simpan Perubahan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function loadEditNon(id, kategori, tipe, kode, judul, penerbit, isbn, pengarang, halaman, jumlah, status, tahun, sinopsis) {
+      $("#editKategori").val(kategori);
+      $("#editTipe").val(tipe);
+      $("#editKode").val(kode);
+      $("#editJudul").val(judul);
+      $("#editPenerbit").val(penerbit);
+      $("#editIsbn").val(isbn);
+      $("#editPengarang").val(pengarang);
+      $("#editHalaman").val(halaman);
+      $("#editJumlah").val(jumlah);
+      $("#editStatus").val(status);
+      $("#editTahun").val(tahun);
+      $("#editSinopsis").val(sinopsis);
+    }
+  </script>
+
+</body>
+</html>
+

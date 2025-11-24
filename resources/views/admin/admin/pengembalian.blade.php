@@ -1,0 +1,289 @@
+{-- Converted from admin/pengembalian.html to Blade --}
+<!-- Put this file in resources/views/admin/pengembalian.blade.php -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Pengembalian Buku — Dashboard Perpustakaan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Font: Inter -->
+  <link  rel="stylesheet">
+
+  <!-- Icons & Core SB Admin -->
+  <link  rel="stylesheet" />
+  <link  rel="stylesheet" />
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" />
+
+  <!-- CUSTOM PREMIUM STYLE -->
+  <style>
+    :root{
+      --primary: #001B5A99;
+      --secondary: #001B5A5C;
+      --bg: #FFFFFF;
+      --muted: #6b7280;
+      --card-shadow: 0 10px 25px rgba(3,19,45,0.06);
+    }
+
+    body { font-family: "Inter"; background: var(--bg); }
+
+    /* ========== SIDEBAR ========== */
+    .sidebar { background: linear-gradient(180deg, var(--secondary), var(--primary)); }
+    .sidebar .nav-link, .sidebar .sidebar-brand-text { color: rgba(255,255,255,0.95); }
+    .sidebar .nav-link:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); border-radius: .35rem; }
+
+    /* ========== TABLE ========== */
+    table thead th {
+      background:#f9fafb !important;
+      font-weight:600;
+    }
+
+    /* Foto bukti */
+    .return-proof {
+      width: 55px; height: 55px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .return-proof:hover { transform: scale(1.1); }
+
+    .modal-img { width:100%; border-radius:10px; }
+
+    /* Filter dropdown */
+    .filter-select {
+      width: 220px;
+      border-radius:6px;
+    }
+
+    .card { border:0; border-radius:.8rem; box-shadow:var(--card-shadow); }
+  </style>
+</head>
+
+
+<body id="page-top">
+
+<div id="wrapper">
+<!-- SIDEBAR -->
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" >
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="sidebar-brand-text mx-2">Perpustakaan</div>
+            </a>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item active">
+                <a class="nav-link" ><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Data Buku</div>
+
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-file"></i> Buku Akademik</a></li>
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-book"></i> Buku Non-Akademik</a></li>
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Data Users</div>
+
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-user-graduate"></i> Users</a></li>
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-chalkboard-teacher"></i> Petugas</a></li>
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Transaksi</div>
+
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-hand-holding"></i> Peminjaman</a></li>
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-undo"></i> Pengembalian</a></li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-cog"></i> Settings</a></li>
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+
+        </ul>
+        <!-- END SIDEBAR -->
+
+
+
+  <!-- CONTENT -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+
+      <!-- TOPBAR -->
+      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow-sm">
+        <span class="ml-auto mr-2 text-gray-600 small">Petugas</span>
+      </nav>
+
+      <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="font-weight-bold mb-0">Pengembalian Buku</h3>
+
+          <button class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#modalTambah">
+            <i class="fas fa-plus mr-1"></i> Tambah Pengembalian
+          </button>
+        </div>
+
+        <!-- FILTER -->
+        <div class="mb-3">
+          <select id="filterStatus" class="form-control filter-select">
+            <option value="">Filter Status</option>
+            <option value="Tepat Waktu">Tepat Waktu</option>
+            <option value="Telat">Telat</option>
+          </select>
+        </div>
+
+        <!-- TABLE -->
+        <div class="card fade-in mb-4">
+          <div class="card-body">
+            <div class="table-responsive">
+
+              <table class="table table-bordered" id="tablePengembalian" width="100%">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>ID Peminjaman</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                    <th>ID User</th>
+                    <th>Bukti Foto</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+
+                <tbody id="dataRows">
+                  <tr data-status="Tepat Waktu">
+                    <td>1</td>
+                    <td>PJM-001</td>
+                    <td>2025-01-20</td>
+                    <td><span class="badge badge-success">Tepat Waktu</span></td>
+                    <td>USR-10</td>
+                    <td><img  class="return-proof" data-toggle="modal" data-target="#modalFoto"></td>
+                    <td class="text-center">
+                      <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL FOTO -->
+<div class="modal fade" id="modalFoto">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-2">
+      <img id="previewFoto" class="modal-img">
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH PENGEMBALIAN -->
+<div class="modal fade" id="modalTambah">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5>Tambah Pengembalian</h5>
+      </div>
+
+      <div class="modal-body">
+
+        <label class="font-weight-bold">ID Peminjaman</label>
+        <select id="addPeminjaman" class="form-control mb-3">
+          <option value="">Pilih...</option>
+          <option value="PJM-001" data-user="USR-10">PJM-001 — USR-10</option>
+          <option value="PJM-002" data-user="USR-11">PJM-002 — USR-11</option>
+        </select>
+
+        <label class="font-weight-bold">User Otomatis</label>
+        <input id="addUser" class="form-control mb-3" readonly>
+
+        <label class="font-weight-bold">Status Pengembalian</label>
+        <select id="addStatus" class="form-control mb-3">
+          <option value="Tepat Waktu">Tepat Waktu</option>
+          <option value="Telat">Telat</option>
+        </select>
+
+        <label class="font-weight-bold">Upload Foto Bukti</label>
+        <input type="file" id="addFoto" accept="image/*" class="form-control mb-3">
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button class="btn btn-primary" id="btnSimpan">Simpan</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script ></script>
+<script ></script>
+<script ></script>
+<script ></script>
+
+<script>
+  var table = $('#tablePengembalian').DataTable();
+
+  // FOTO PREVIEW
+  $(document).on("click", ".return-proof", function () {
+    $("#previewFoto").attr("src", $(this).attr("src"));
+  });
+
+  // AUTO-FILL USER
+  $("#addPeminjaman").on("change", function () {
+    $("#addUser").val($(this).find(":selected").data("user") || "");
+  });
+
+  // SIMPAN DATA BARU
+  $("#btnSimpan").on("click", function () {
+
+    let id = table.data().count() + 1;
+    let pem = $("#addPeminjaman").val();
+    let user = $("#addUser").val();
+    let status = $("#addStatus").val();
+    let foto = $("#addFoto")[0].files[0];
+
+    if (!pem || !user || !foto) { alert("Lengkapi semua data!"); return; }
+
+    let fotoURL = URL.createObjectURL(foto);
+
+    table.row.add([
+      id,
+      pem,
+      new Date().toISOString().split('T')[0],
+      `<span class="badge ${status === "Telat" ? "badge-danger" : "badge-success"}">${status}</span>`,
+      user,
+      `<img  class="return-proof" data-toggle="modal" data-target="#modalFoto">`,
+      `<button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>`
+    ]).draw();
+
+    $("#modalTambah").modal("hide");
+  });
+
+  // FILTER STATUS
+  $("#filterStatus").on("change", function () {
+    table.column(3).search($(this).val()).draw();
+  });
+</script>
+
+</body>
+</html>

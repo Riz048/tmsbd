@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Dashboard Perpustakaan — Premium</title>
+
+  <!-- Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Icons & Core CSS (SB Admin base) -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+  <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css"/>
+
+  <!-- Theme colors (user provided) -->
+  <style>
+    :root{
+      --primary: #001B5A99;   /* translucent navy */
+      --secondary: #001B5A5C; /* darker navy */
+      --bg: #FFFFFF;
+      --muted: #6b7280;
+      --card-shadow: 0 10px 25px rgba(3,19,45,0.06);
+      --glass: rgba(255,255,255,0.8);
+    }
+
+    html,body { height:100%; background:var(--bg); font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color: #0b1220; }
+
+    /* Sidebar */
+    .sidebar { background: linear-gradient(180deg, var(--secondary), var(--primary)); }
+    .sidebar .nav-link, .sidebar .sidebar-brand-text { color: rgba(255,255,255,0.95); }
+    .sidebar .nav-link { transition: background .18s, transform .18s; border-radius: .35rem; }
+    .sidebar .nav-link:hover { background: rgba(255,255,255,0.06); transform: translateX(6px); }
+    .sidebar .sidebar-brand { padding: 1.15rem 1rem; font-weight:700; letter-spacing:.3px; }
+
+    /* Topbar */
+    .topbar { background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.9)); border-bottom: 1px solid rgba(6,10,20,0.04); }
+
+    /* Cards */
+    .card { border: 0; border-radius: .8rem; box-shadow: var(--card-shadow); }
+    .card .card-header { background: transparent; border-bottom: 0; font-weight:600; color:var(--secondary); }
+    .card .card-body { padding: 1.25rem; }
+
+    /* Accent for stat numbers */
+    .stat-number { color: var(--primary); font-weight: 700; font-size: 1.25rem; }
+
+    /* Animations */
+    .fade-in { animation: fadeIn .6s cubic-bezier(.2,.9,.2,1) both; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:none; } }
+
+    /* DataTable small tweaks */
+    .dataTables_wrapper .dataTables_filter input { border-radius: 6px; }
+    table.dataTable thead th { background: rgba(0,0,0,0.03); font-weight:600; }
+
+    /* Footer */
+    .sticky-footer { border-top: 1px solid rgba(6,10,20,0.04); }
+    
+    /* Chart container responsive heights */
+    .chart-container { min-height: 240px; height: 100%; }
+
+    /* Small responsive improvements */
+    @media (max-width: 768px){
+      .sidebar { width: 64px !important; }
+      .sidebar .sidebar-brand-text { display:none; }
+    }
+  </style>
+</head>
+<body id="page-top">
+
+  <!-- Page wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-book"></i></div>
+        <div class="sidebar-brand-text mx-2">Perpustakaan</div>
+      </a>
+
+      <hr class="sidebar-divider my-0">
+
+      <li class="nav-item active">
+        <a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      </li>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-heading">Data Buku</div>
+      <li class="nav-item"><a class="nav-link" href="akademik.html"><i class="fas fa-file"></i> Buku Akademik</a></li>
+      <li class="nav-item"><a class="nav-link" href="nonakademik.html"><i class="fas fa-book"></i> Buku Non-Akademik</a></li>
+
+      <hr class="sidebar-divider">
+      <div class="sidebar-heading">Data Users</div>
+      <li class="nav-item"><a class="nav-link" href="users.html"><i class="fas fa-user-graduate"></i> Users</a></li>
+      <li class="nav-item"><a class="nav-link" href="petugas.html"><i class="fas fa-chalkboard-teacher"></i> Petugas</a></li>
+
+      <hr class="sidebar-divider">
+      <div class="sidebar-heading">Transaksi</div>
+      <li class="nav-item"><a class="nav-link" href="peminjaman.html"><i class="fas fa-hand-holding"></i> Peminjaman</a></li>
+      <li class="nav-item"><a class="nav-link" href="pengembalian.html"><i class="fas fa-undo"></i> Pengembalian</a></li>
+      
+      <hr class="sidebar-divider">
+      <li class="nav-item"><a class="nav-link" href="pengaturan.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li class="nav-item"><a class="nav-link" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+    <!-- End Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light topbar mb-4 shadow">
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3"><i class="fa fa-bars"></i></button>
+
+          <ul class="navbar-nav ml-auto">
+            <!-- alerts -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                <i class="fas fa-bell fa-fw"></i>
+                <span class="badge badge-danger badge-counter">3+</span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                <h6 class="dropdown-header">Notifikasi</h6>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="mr-3"><div class="icon-circle bg-primary"><i class="fas fa-file-alt text-white"></i></div></div>
+                  <div><div class="small text-gray-500">Hari ini</div><span class="font-weight-bold">Laporan peminjaman tersedia</span></div>
+                </a>
+              </div>
+            </li>
+
+            <!-- user -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Perpus</span>
+                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow">
+                <a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw mr-2"></i> Profile</a>
+                <a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2"></i> Settings</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i> Logout</a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <!-- End Topbar -->
+
+        <!-- Main Content -->
+        <div class="container-fluid fade-in">
+
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard Perpustakaan</h1>
+            <div>
+              <button class="btn btn-sm" style="background:var(--primary); color:#fff; border-radius:8px;">Export Report</button>
+            </div>
+          </div>
+
+          <!-- Cards -->
+          <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-xs text-uppercase text-muted">Total Buku Akademik</div>
+                    <div class="stat-number">1,240</div>
+                  </div>
+                  <i class="fas fa-book-reader fa-2x text-muted"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-xs text-uppercase text-muted">Total Buku Bacaan</div>
+                    <div class="stat-number">980</div>
+                  </div>
+                  <i class="fas fa-book-open fa-2x text-muted"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-xs text-uppercase text-muted">Total Siswa</div>
+                    <div class="stat-number">540</div>
+                  </div>
+                  <i class="fas fa-user-graduate fa-2x text-muted"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-xs text-uppercase text-muted">Total Pegawai</div>
+                    <div class="stat-number">62</div>
+                  </div>
+                  <i class="fas fa-chalkboard-teacher fa-2x text-muted"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts row -->
+          <div class="row">
+            <div class="col-xl-8 col-lg-7 mb-4">
+              <div class="card">
+                <div class="card-header">Grafik Peminjaman Minggu Ini</div>
+                <div class="card-body chart-container">
+                  <canvas id="myAreaChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-5 mb-4">
+              <div class="card">
+                <div class="card-header">Kategori Paling Dipinjam</div>
+                <div class="card-body chart-container">
+                  <canvas id="myPieChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extra charts -->
+          <div class="row">
+            <div class="col-lg-6 mb-4">
+              <div class="card">
+                <div class="card-header">Grafik Bar Stok Buku</div>
+                <div class="card-body chart-container">
+                  <canvas id="barChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+              <div class="card">
+                <div class="card-header">Grafik Pengunjung Per Minggu</div>
+                <div class="card-body chart-container">
+                  <canvas id="lineChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <!-- Recent activity / notif -->
+            <div class="col-lg-6 mb-4">
+  <div class="card">
+    <div class="card-header">Recent Activity</div>
+    <div class="card-body">
+       <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><strong>Rizky</strong> meminjam <em>Buku Fisika Dasar</em> — <small class="text-muted">2 jam lalu</small></li>
+                    <li class="mb-2"><strong>Siti</strong> mengembalikan <em>Biologi 101</em> — <small class="text-muted">6 jam lalu</small></li>
+                    <li class="mb-2"><strong>Admin</strong> menambah stok <em>Sejarah Indonesia</em> — <small class="text-muted">1 hari lalu</small></li>
+                  </ul>
+    </div>
+  </div>
+</div>
+
+          </div>
+
+          <!-- DataTable -->
+          <div class="card mb-4">
+            <div class="card-header">Data Buku Terbaru</div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="tabelBuku" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Judul</th>
+                      <th>Kategori</th>
+                      <th>Stok</th>
+                      <th>Dipinjam</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>1</td><td>Laskar Pelangi</td><td>Fiksi</td><td>10</td><td>3</td></tr>
+                    <tr><td>2</td><td>Bumi Manusia</td><td>Sejarah</td><td>7</td><td>2</td></tr>
+                    <tr><td>3</td><td>Fisika Dasar</td><td>Sains</td><td>5</td><td>1</td></tr>
+                    <tr><td>4</td><td>Matematika SMA</td><td>Akademik</td><td>12</td><td>5</td></tr>
+                    <tr><td>5</td><td>Biografi Tokoh</td><td>Biografi</td><td>8</td><td>0</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- End container -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+          <div class="text-center py-3">Perpustakaan SMAN 1 Hamparan Perak</div>
+        </footer>
+
+      </div>
+    </div>
+    <!-- End Content Wrapper -->
+  </div>
+  <!-- End Page Wrapper -->
+
+  <!-- Scroll to Top -->
+  <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+
+  <!-- SCRIPTS: jQuery, Bootstrap -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Chart.js (local vendor path expected) -->
+  <script src="vendor/chart.js/Chart.min.js"></script>
+
+  <!-- DataTables -->
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+  <!-- App scripts: initialize DataTable + Charts -->
+  <script>
+    // DataTable init
+    $(document).ready(function(){
+      $('#tabelBuku').DataTable({
+        responsive: true,
+        language: { search: "_INPUT_", searchPlaceholder: "Search books..." },
+        lengthChange: false,
+        pageLength: 5
+      });
+    });
+
+    // Helper: safe Chart creation
+    function createChart(id, cfg) {
+      var el = document.getElementById(id);
+      if (!el) return null;
+      return new Chart(el.getContext('2d'), cfg);
+    }
+
+    // Area (line) chart: Peminjaman week
+    createChart('myAreaChart', {
+      type: 'line',
+      data: {
+        labels: ['Sen','Sel','Rab','Kam','Jum','Sab','Min'],
+        datasets: [{
+          label: 'Peminjaman',
+          data: [14,22,30,28,32,40,18],
+          backgroundColor: 'rgba(0,27,90,0.08)', // uses primary with alpha
+          borderColor: '#001B5A99',
+          pointBackgroundColor: '#001B5A99',
+          tension: 0.35,
+          fill: true
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#374151' } },
+          y: { beginAtZero: true, ticks: { color: '#374151' } }
+        }
+      }
+    });
+
+    // Pie chart: categories popularity
+    createChart('myPieChart', {
+      type: 'pie',
+      data: {
+        labels: ['Fiksi','Sains','Biografi','Sejarah'],
+        datasets: [{
+          data: [40,25,15,20],
+          backgroundColor: ['#001B5A99','#1cc88a','#36b9cc','#f6c23e']
+        }]
+      },
+      options: { maintainAspectRatio:false }
+    });
+
+    // Bar chart: stok
+    createChart('barChart', {
+      type: 'bar',
+      data: {
+        labels: ['Fiksi','Non Fiksi','Sains','Sejarah'],
+        datasets: [{
+          label: 'Stok',
+          data: [120,90,75,60],
+          backgroundColor: '#001B5A99',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        maintainAspectRatio:false,
+        plugins: { legend: { display: false } },
+        scales: { x: { grid:{ display:false }, ticks:{ color:'#374151' } }, y: { beginAtZero:true, ticks:{ color:'#374151' } } }
+      }
+    });
+
+    // Line chart: visitors
+    createChart('lineChart', {
+      type: 'line',
+      data: {
+        labels: ['Sen','Sel','Rab','Kam','Jum','Sab','Min'],
+        datasets: [{
+          label: 'Pengunjung',
+          data: [12,20,25,22,30,35,15],
+          borderColor: '#1cc88a',
+          backgroundColor: 'rgba(28,200,138,0.04)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: { maintainAspectRatio:false, plugins:{legend:{display:false}} }
+    });
+
+    // optional: small UI niceties
+    // collapse sidebar sections persistence
+    $('#bukuAkademik, #bukuBacaan').on('show.bs.collapse', function(){ $(this).prev().addClass('active'); });
+    $('#bukuAkademik, #bukuBacaan').on('hide.bs.collapse', function(){ $(this).prev().removeClass('active'); });
+  </script>
+</body>
+</html>

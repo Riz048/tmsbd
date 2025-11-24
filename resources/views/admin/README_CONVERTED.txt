@@ -1,0 +1,228 @@
+Converted Blade package
+=======================
+
+What I did:
+- Extracted your uploaded admin.zip and converted every .html/.htm file into a .blade.php file.
+- Prepended a Blade comment header to each converted file and converted simple relative asset links (href/src) into Laravel's {{ asset(...) }} helper where obvious.
+- All other files (CSS, JS, images) were copied as-is so you can place them under Laravel's public/ folder.
+
+How to use with Laravel Herd:
+1. Download and unzip `admin_blade_converted.zip`.
+2. Move the files and folders:
+   - Put Blade templates (files ending with .blade.php) into `resources/views/` preserving subfolders.
+   - Put static assets (css, js, images) into the `public/` directory (e.g. public/css, public/js).
+3. If your templates reference a "layout" (like header/footer), you can create a `resources/views/layouts/app.blade.php` and use `@extends('layouts.app')` with `@section('content')` / `@yield('content')` wrappers.
+4. Example minimal route (routes/web.php):
+   <?php
+   // routes/web.php
+   Route::get('/', function () {
+       return view('index'); // points to resources/views/index.blade.php
+   });
+5. Run Herd (or `php artisan serve`) and open the project. Herd automatically detects Blade templates.
+
+Notes / Caveats:
+- This is a straightforward mechanical conversion. Complex template includes, inline scripts that build URLs, or server-side template logic were NOT transformed beyond simple asset path replacement.
+- You might want to tidy up links to includes and replace static header/footer with Blade `@include` or `@component`, and replace repeated HTML with a layout file for maintainability.
+
+Files included in admin_blade_converted.zip:
+- admin/akademik.blade.php
+- admin/forgot-password.blade.php
+- admin/index.blade.php
+- admin/login.blade.php
+- admin/nonakademik.blade.php
+- admin/peminjaman.blade.php
+- admin/pengaturan.blade.php
+- admin/pengembalian.blade.php
+- admin/petugas.blade.php
+- admin/register.blade.php
+- admin/users.blade.php
+- admin/utilities-animation.blade.php
+- admin/utilities-border.blade.php
+- admin/utilities-color.blade.php
+- admin/utilities-other.blade.php
+- admin/.browserslistrc
+- admin/.DS_Store
+- admin/.gitignore
+- admin/.travis.yml
+- admin/gulpfile.js
+- admin/LICENSE
+- admin/navbar.blade.php
+- admin/package-lock.json
+- admin/package.json
+- admin/PRO_UPGRADE.txt
+- admin/README.md
+- admin/css/sb-admin-2.css
+- admin/css/sb-admin-2.min.css
+- admin/img/undraw_posting_photo.svg
+- admin/img/undraw_profile.svg
+- admin/img/undraw_profile_1.svg
+- admin/img/undraw_profile_2.svg
+- admin/img/undraw_profile_3.svg
+- admin/img/undraw_rocket.svg
+- admin/js/sb-admin-2.js
+- admin/js/sb-admin-2.min.js
+- admin/js/demo/chart-area-demo.js
+- admin/js/demo/chart-bar-demo.js
+- admin/js/demo/chart-pie-demo.js
+- admin/js/demo/datatables-demo.js
+- admin/scss/sb-admin-2.scss
+- admin/scss/_buttons.scss
+- admin/scss/_cards.scss
+- admin/scss/_charts.scss
+- admin/scss/_dropdowns.scss
+- admin/scss/_error.scss
+- admin/scss/_footer.scss
+- admin/scss/_global.scss
+- admin/scss/_login.scss
+- admin/scss/_mixins.scss
+- admin/scss/_navs.scss
+- admin/scss/_utilities.scss
+- admin/scss/_variables.scss
+- admin/scss/navs/_global.scss
+- admin/scss/navs/_sidebar.scss
+- admin/scss/navs/_topbar.scss
+- admin/scss/utilities/_animation.scss
+- admin/scss/utilities/_background.scss
+- admin/scss/utilities/_border.scss
+- admin/scss/utilities/_display.scss
+- admin/scss/utilities/_progress.scss
+- admin/scss/utilities/_rotate.scss
+- admin/scss/utilities/_text.scss
+- admin/vendor/bootstrap/js/bootstrap.bundle.js
+- admin/vendor/bootstrap/js/bootstrap.bundle.js.map
+- admin/vendor/bootstrap/js/bootstrap.bundle.min.js
+- admin/vendor/bootstrap/js/bootstrap.bundle.min.js.map
+- admin/vendor/bootstrap/js/bootstrap.js
+- admin/vendor/bootstrap/js/bootstrap.js.map
+- admin/vendor/bootstrap/js/bootstrap.min.js
+- admin/vendor/bootstrap/js/bootstrap.min.js.map
+- admin/vendor/bootstrap/scss/bootstrap-grid.scss
+- admin/vendor/bootstrap/scss/bootstrap-reboot.scss
+- admin/vendor/bootstrap/scss/bootstrap.scss
+- admin/vendor/bootstrap/scss/_alert.scss
+- admin/vendor/bootstrap/scss/_badge.scss
+- admin/vendor/bootstrap/scss/_breadcrumb.scss
+- admin/vendor/bootstrap/scss/_button-group.scss
+- admin/vendor/bootstrap/scss/_buttons.scss
+- admin/vendor/bootstrap/scss/_card.scss
+- admin/vendor/bootstrap/scss/_carousel.scss
+- admin/vendor/bootstrap/scss/_close.scss
+- admin/vendor/bootstrap/scss/_code.scss
+- admin/vendor/bootstrap/scss/_custom-forms.scss
+- admin/vendor/bootstrap/scss/_dropdown.scss
+- admin/vendor/bootstrap/scss/_forms.scss
+- admin/vendor/bootstrap/scss/_functions.scss
+- admin/vendor/bootstrap/scss/_grid.scss
+- admin/vendor/bootstrap/scss/_images.scss
+- admin/vendor/bootstrap/scss/_input-group.scss
+- admin/vendor/bootstrap/scss/_jumbotron.scss
+- admin/vendor/bootstrap/scss/_list-group.scss
+- admin/vendor/bootstrap/scss/_media.scss
+- admin/vendor/bootstrap/scss/_mixins.scss
+- admin/vendor/bootstrap/scss/_modal.scss
+- admin/vendor/bootstrap/scss/_nav.scss
+- admin/vendor/bootstrap/scss/_navbar.scss
+- admin/vendor/bootstrap/scss/_pagination.scss
+- admin/vendor/bootstrap/scss/_popover.scss
+- admin/vendor/bootstrap/scss/_print.scss
+- admin/vendor/bootstrap/scss/_progress.scss
+- admin/vendor/bootstrap/scss/_reboot.scss
+- admin/vendor/bootstrap/scss/_root.scss
+- admin/vendor/bootstrap/scss/_spinners.scss
+- admin/vendor/bootstrap/scss/_tables.scss
+- admin/vendor/bootstrap/scss/_toasts.scss
+- admin/vendor/bootstrap/scss/_tooltip.scss
+- admin/vendor/bootstrap/scss/_transitions.scss
+- admin/vendor/bootstrap/scss/_type.scss
+- admin/vendor/bootstrap/scss/_utilities.scss
+- admin/vendor/bootstrap/scss/_variables.scss
+- admin/vendor/bootstrap/scss/mixins/_alert.scss
+- admin/vendor/bootstrap/scss/mixins/_background-variant.scss
+- admin/vendor/bootstrap/scss/mixins/_badge.scss
+- admin/vendor/bootstrap/scss/mixins/_border-radius.scss
+- admin/vendor/bootstrap/scss/mixins/_box-shadow.scss
+- admin/vendor/bootstrap/scss/mixins/_breakpoints.scss
+- admin/vendor/bootstrap/scss/mixins/_buttons.scss
+- admin/vendor/bootstrap/scss/mixins/_caret.scss
+- admin/vendor/bootstrap/scss/mixins/_clearfix.scss
+- admin/vendor/bootstrap/scss/mixins/_deprecate.scss
+- admin/vendor/bootstrap/scss/mixins/_float.scss
+- admin/vendor/bootstrap/scss/mixins/_forms.scss
+- admin/vendor/bootstrap/scss/mixins/_gradients.scss
+- admin/vendor/bootstrap/scss/mixins/_grid-framework.scss
+- admin/vendor/bootstrap/scss/mixins/_grid.scss
+- admin/vendor/bootstrap/scss/mixins/_hover.scss
+- admin/vendor/bootstrap/scss/mixins/_image.scss
+- admin/vendor/bootstrap/scss/mixins/_list-group.scss
+- admin/vendor/bootstrap/scss/mixins/_lists.scss
+- admin/vendor/bootstrap/scss/mixins/_nav-divider.scss
+- admin/vendor/bootstrap/scss/mixins/_pagination.scss
+- admin/vendor/bootstrap/scss/mixins/_reset-text.scss
+- admin/vendor/bootstrap/scss/mixins/_resize.scss
+- admin/vendor/bootstrap/scss/mixins/_screen-reader.scss
+- admin/vendor/bootstrap/scss/mixins/_size.scss
+- admin/vendor/bootstrap/scss/mixins/_table-row.scss
+- admin/vendor/bootstrap/scss/mixins/_text-emphasis.scss
+- admin/vendor/bootstrap/scss/mixins/_text-hide.scss
+- admin/vendor/bootstrap/scss/mixins/_text-truncate.scss
+- admin/vendor/bootstrap/scss/mixins/_transition.scss
+- admin/vendor/bootstrap/scss/mixins/_visibility.scss
+- admin/vendor/bootstrap/scss/utilities/_align.scss
+- admin/vendor/bootstrap/scss/utilities/_background.scss
+- admin/vendor/bootstrap/scss/utilities/_borders.scss
+- admin/vendor/bootstrap/scss/utilities/_clearfix.scss
+- admin/vendor/bootstrap/scss/utilities/_display.scss
+- admin/vendor/bootstrap/scss/utilities/_embed.scss
+- admin/vendor/bootstrap/scss/utilities/_flex.scss
+- admin/vendor/bootstrap/scss/utilities/_float.scss
+- admin/vendor/bootstrap/scss/utilities/_interactions.scss
+- admin/vendor/bootstrap/scss/utilities/_overflow.scss
+- admin/vendor/bootstrap/scss/utilities/_position.scss
+- admin/vendor/bootstrap/scss/utilities/_screenreaders.scss
+- admin/vendor/bootstrap/scss/utilities/_shadows.scss
+- admin/vendor/bootstrap/scss/utilities/_sizing.scss
+- admin/vendor/bootstrap/scss/utilities/_spacing.scss
+- admin/vendor/bootstrap/scss/utilities/_stretched-link.scss
+- admin/vendor/bootstrap/scss/utilities/_text.scss
+- admin/vendor/bootstrap/scss/utilities/_visibility.scss
+- admin/vendor/bootstrap/scss/vendor/_rfs.scss
+- admin/vendor/chart.js/Chart.bundle.js
+- admin/vendor/chart.js/Chart.bundle.min.js
+- admin/vendor/chart.js/Chart.js
+- admin/vendor/chart.js/Chart.min.js
+- admin/vendor/datatables/dataTables.bootstrap4.css
+- admin/vendor/datatables/dataTables.bootstrap4.js
+- admin/vendor/datatables/dataTables.bootstrap4.min.css
+- admin/vendor/datatables/dataTables.bootstrap4.min.js
+- admin/vendor/datatables/jquery.dataTables.js
+- admin/vendor/datatables/jquery.dataTables.min.js
+- admin/vendor/fontawesome-free/attribution.js
+- admin/vendor/fontawesome-free/LICENSE.txt
+- admin/vendor/fontawesome-free/package.json
+- admin/vendor/fontawesome-free/css/all.css
+- admin/vendor/fontawesome-free/css/all.min.css
+- admin/vendor/fontawesome-free/css/brands.css
+- admin/vendor/fontawesome-free/css/brands.min.css
+- admin/vendor/fontawesome-free/css/fontawesome.css
+- admin/vendor/fontawesome-free/css/fontawesome.min.css
+- admin/vendor/fontawesome-free/css/regular.css
+- admin/vendor/fontawesome-free/css/regular.min.css
+- admin/vendor/fontawesome-free/css/solid.css
+- admin/vendor/fontawesome-free/css/solid.min.css
+- admin/vendor/fontawesome-free/css/svg-with-js.css
+- admin/vendor/fontawesome-free/css/svg-with-js.min.css
+- admin/vendor/fontawesome-free/css/v4-shims.css
+- admin/vendor/fontawesome-free/css/v4-shims.min.css
+- admin/vendor/fontawesome-free/js/all.js
+- admin/vendor/fontawesome-free/js/all.min.js
+- admin/vendor/fontawesome-free/js/brands.js
+- admin/vendor/fontawesome-free/js/brands.min.js
+- admin/vendor/fontawesome-free/js/conflict-detection.js
+- admin/vendor/fontawesome-free/js/conflict-detection.min.js
+- admin/vendor/fontawesome-free/js/fontawesome.js
+- admin/vendor/fontawesome-free/js/fontawesome.min.js
+- admin/vendor/fontawesome-free/js/regular.js
+- admin/vendor/fontawesome-free/js/regular.min.js
+- admin/vendor/fontawesome-free/js/solid.js
+- admin/vendor/fontawesome-free/js/solid.min.js
+- ... (truncated)
