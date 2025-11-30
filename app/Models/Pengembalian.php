@@ -4,25 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PeminjamanDetail extends Model
+class Pengembalian extends Model
 {
-    protected $table = 'peminjaman_detail';
+    protected $table = 'pengembalian';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
         'peminjaman_id',
-        'buku_id',
-        'jumlah',
+        'tanggal_kembali',
+        'id_user',
+        'foto_bukti'
     ];
 
+    // Relasi ke peminjaman
     public function peminjaman()
     {
         return $this->belongsTo(Peminjaman::class, 'peminjaman_id');
     }
 
-    public function buku()
+    // Relasi ke user
+    public function user()
     {
-        return $this->belongsTo(Buku::class, 'buku_id', 'id');
+        return $this->belongsTo(User::class, 'id_user');
     }
 }

@@ -3,42 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AuthController extends Controller
 {
-    // Halaman login
     public function login()
     {
         return view('auth.login');
     }
 
-    // Proses login user
     public function authenticate(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended('/');
+        // Cari user berdasarkan username
+        $user = User::where('username', $request->username)->first();
+
+        // Kalau tidak ditemukan atau password beda → gagal
+        if (!$user || $user->password !== $request->password) {
+            return back()->withErrors(['login' => 'Username atau password salah.']);
         }
 
-        return back()->withErrors([
-            'login' => 'Username atau password salah.',
+        // Simpan user ke session manual
+        session([
+            'logged_in' => true,
+            'user_id'   => $user->id_user,
+            'role'      => $user->role,
+            'user_name' => $user->nama,
         ]);
+
+        return redirect()->intended('/');
     }
 
-    // Logout
     public function logout(Request $request)
     {
-        Auth::logout();
+        session()->forget('logged_in');
+        session()->forget('user_id');
+        session()->forget('role');
+        session()->forget('user_name');
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->session()->flush();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

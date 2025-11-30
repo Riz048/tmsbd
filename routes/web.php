@@ -45,30 +45,25 @@ Route::view('/ilmu-agama', 'user.referensi.kategori.nonfiksi.agama')->name('buku
 // ===============
 
 Route::get('/login', [AuthController::class, 'login'])
-    ->middleware('guest')
+    ->middleware('guest.manual')
     ->name('login');
 
 Route::post('/login', [AuthController::class, 'authenticate'])
-    ->name('authenticate')
-    ->middleware('guest');
+    ->middleware('guest.manual')
+    ->name('authenticate');
 
 Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout')
-    ->middleware('auth');
+    ->middleware('auth.manual')
+    ->name('logout');
 
 
 // =========================
 // HALAMAN USER (SISWA/GURU)
 // =========================
 
-Route::middleware([
-    'auth',
-    RoleMiddleware::class . ':siswa,guru',
-])->group(function () {
-
+Route::middleware(['auth.manual', 'role.manual:siswa,guru'])->group(function () {
     Route::get('/riwayat', [UserController::class, 'riwayat'])
         ->name('user.transaksi.riwayat');
-
 });
 
 Route::get('/referensi', [ReferensiController::class, 'home'])

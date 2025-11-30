@@ -10,10 +10,17 @@ class UserController extends Controller
     // Riwayat transaksi
     public function riwayat()
     {
-        $userId = auth()->id();
+        // Ambil ID user dari login manual
+        $userId = session('user_id');
 
-        $riwayat = Peminjaman::where('id_user', $userId)
-            ->with(['detail.buku'])
+        // Kalau user tidak login → redirect
+        if (!$userId) {
+            return redirect('/login');
+        }
+
+        // Ambil semua peminjaman milik user
+        $riwayat = \App\Models\Peminjaman::with(['detail.buku', 'pengembalian'])
+            ->where('id_user', $userId)
             ->orderBy('tanggal_pinjam', 'desc')
             ->get();
 

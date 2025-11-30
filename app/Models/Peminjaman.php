@@ -28,4 +28,9 @@ class Peminjaman extends Model
     {
         return $this->hasMany(PeminjamanDetail::class, 'peminjaman_id');
     }
+
+    public function pengembalian()
+    {
+        return $this->hasOne(Pengembalian::class, 'peminjaman_id');
+    }
 }

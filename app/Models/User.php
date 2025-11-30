@@ -25,12 +25,7 @@ class User extends Authenticatable
         'foto'
     ];
 
-    protected $hidden = [
-        'password'
-    ];
-
     protected $casts = [
-        'password' => 'hashed',
         'tanggal_lahir' => 'date'
     ];
 

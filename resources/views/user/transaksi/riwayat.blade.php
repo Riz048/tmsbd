@@ -39,15 +39,54 @@
         <div id="transaction-list" class="space-y-8">
             @forelse($riwayat as $index => $pinjam)
                 @php
-                    $first = $pinjam->detail->first();
-                    $judul = $first?->buku?->judul ?? 'Judul Buku Tidak Diketahui';
+                    // Detail buku
+                    $first  = $pinjam->detail->first();
+                    $judul  = $first?->buku?->judul ?? 'Judul Buku Tidak Diketahui';
                     $gambar = $first?->buku?->gambar ?? null;
 
-                    $isBorrowed = $pinjam->tanggal_kembali == null;
-                    $statusColor = $isBorrowed ? 'bg-yellow-500' : 'bg-green-600';
-                    $tanggalKembaliText = $isBorrowed
-                        ? 'Belum Dikembalikan'
-                        : \Carbon\Carbon::parse($pinjam->tanggal_kembali)->format('d M Y');
+                    // Pengembalian
+                    $pengembalian = $pinjam->pengembalian;
+                    $hasReturn    = $pengembalian !== null;
+
+                    // Deadline 7 hari
+                    $tanggalPinjam = \Carbon\Carbon::parse($pinjam->tanggal_pinjam)->startOfDay();
+                    $deadline      = $tanggalPinjam->copy()->addDays(7);
+                    $today         = now()->startOfDay();
+
+                    // 1. SUDAH DIKEMBALIKAN
+                    if ($hasReturn) {
+                        $labelTanggal       = 'Tanggal Pengembalian';
+                        $tanggalKembaliText = \Carbon\Carbon::parse($pengembalian->tanggal_kembali)->format('d M Y');
+
+                        $iconColor   = 'text-green-600';
+                        $dateColor   = 'text-green-600';
+                        $statusColor = 'bg-green-600';
+                        $statusText  = 'SUDAH DIKEMBALIKAN';
+                    }
+
+                    // 2. MASIH DIPINJAM
+                    elseif ($today->lte($deadline)) {
+                        $labelTanggal       = 'Batas Pengembalian';
+                        $tanggalKembaliText = $deadline->format('d M Y');
+
+                        $iconColor   = 'text-yellow-500';
+                        $dateColor   = 'text-yellow-600';
+                        $statusColor = 'bg-yellow-500';
+                        $statusText  = 'DIPINJAM';
+                    }
+
+                    // 3. TERLAMBAT
+                    else {
+                        $daysLate = $deadline->diffInDays($today);
+
+                        $labelTanggal       = 'Terlambat ' . $daysLate . ' Hari';
+                        $tanggalKembaliText = $deadline->format('d M Y');
+
+                        $iconColor   = 'text-red-600';
+                        $dateColor   = 'text-red-600';
+                        $statusColor = 'bg-red-600';
+                        $statusText  = 'TERLAMBAT';
+                    }
                 @endphp
 
                 <div class="transaction-item bg-white p-4 sm:p-6 rounded-xl shadow-md flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
@@ -58,7 +97,7 @@
                     <div class="flex items-center space-x-3 w-full md:w-2/5">
                         <div class="w-28 h-32 rounded-md overflow-hidden shadow-sm bg-gray-100 flex-shrink-0">
                             @if($gambar)
-                                <img src="{{ asset('storage/' . $gambar) }}" alt="{{ $judul }}" class="w-full h-full object-cover">
+                                <img src="{{ bookImage($gambar) }}" alt="{{ $judul }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                                     No Image
@@ -84,12 +123,13 @@
                             </div>
 
                             <div class="flex items-center space-x-2 bg-gray-100 p-3 rounded-lg text-gray-700 w-full sm:w-64">
-                                <svg class="w-5 h-5 {{ $isBorrowed ? 'text-red-500' : 'text-green-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                <svg class="w-5 h-5 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <div class="flex flex-col">
-                                    <span class="text-xs text-gray-500">Tanggal Pengembalian</span>
-                                    <span class="font-medium {{ $isBorrowed ? 'text-red-600' : 'text-green-600' }}">
+                                    <span class="text-xs text-gray-500">{{ $labelTanggal }}</span>
+                                    <span class="font-medium {{ $dateColor }}">
                                         {{ $tanggalKembaliText }}
                                     </span>
                                 </div>
@@ -98,7 +138,7 @@
 
                         <div class="flex items-center justify-center sm:justify-end md:justify-center w-full sm:w-40">
                             <span class="{{ $statusColor }} text-white font-bold py-2 px-4 rounded-lg w-full text-center">
-                                {{ strtoupper($pinjam->status) }}
+                                {{ $statusText }}
                             </span>
                         </div>
                     </div>
@@ -136,15 +176,54 @@
         <div id="transaction-list" class="space-y-6">
             @forelse($riwayat as $index => $pinjam)
                 @php
-                    $first = $pinjam->detail->first();
-                    $judul = $first?->buku?->judul ?? 'Judul Buku Tidak Diketahui';
+                    // Detail buku
+                    $first  = $pinjam->detail->first();
+                    $judul  = $first?->buku?->judul ?? 'Judul Buku Tidak Diketahui';
                     $gambar = $first?->buku?->gambar ?? null;
 
-                    $isBorrowed = $pinjam->tanggal_kembali == null;
-                    $statusColor = $isBorrowed ? 'bg-yellow-500' : 'bg-green-600';
-                    $tanggalKembaliText = $isBorrowed
-                        ? 'Belum Dikembalikan'
-                        : \Carbon\Carbon::parse($pinjam->tanggal_kembali)->format('d M Y');
+                    // Pengembalian
+                    $pengembalian = $pinjam->pengembalian;
+                    $hasReturn    = $pengembalian !== null;
+
+                    // Deadline 7 hari
+                    $tanggalPinjam = \Carbon\Carbon::parse($pinjam->tanggal_pinjam)->startOfDay();
+                    $deadline      = $tanggalPinjam->copy()->addDays(7);
+                    $today         = now()->startOfDay();
+
+                    // 1. SUDAH DIKEMBALIKAN
+                    if ($hasReturn) {
+                        $labelTanggal       = 'Tanggal Pengembalian';
+                        $tanggalKembaliText = \Carbon\Carbon::parse($pengembalian->tanggal_kembali)->format('d M Y');
+
+                        $iconColor   = 'text-green-600';
+                        $dateColor   = 'text-green-600';
+                        $statusColor = 'bg-green-600';
+                        $statusText  = 'SUDAH DIKEMBALIKAN';
+                    }
+
+                    // 2. MASIH DIPINJAM
+                    elseif ($today->lte($deadline)) {
+                        $labelTanggal       = 'Batas Pengembalian';
+                        $tanggalKembaliText = $deadline->format('d M Y');
+
+                        $iconColor   = 'text-yellow-500';
+                        $dateColor   = 'text-yellow-600';
+                        $statusColor = 'bg-yellow-500';
+                        $statusText  = 'DIPINJAM';
+                    }
+
+                    // 3. TERLAMBAT
+                    else {
+                        $daysLate = $deadline->diffInDays($today);
+
+                        $labelTanggal       = 'Terlambat ' . $daysLate . ' Hari';
+                        $tanggalKembaliText = $deadline->format('d M Y');
+
+                        $iconColor   = 'text-red-600';
+                        $dateColor   = 'text-red-600';
+                        $statusColor = 'bg-red-600';
+                        $statusText  = 'TERLAMBAT';
+                    }
                 @endphp
 
                 <div class="transaction-item bg-white p-4 sm:p-6 rounded-xl shadow-md flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -157,7 +236,7 @@
 
                         <div class="w-20 h-24 sm:w-28 sm:h-32 rounded-md overflow-hidden shadow-sm bg-gray-100 flex-shrink-0">
                             @if($gambar)
-                                <img src="{{ asset('storage/' . $gambar) }}" alt="{{ $judul }}" class="w-full h-full object-cover">
+                                <img src="{{ bookImage($gambar) }}" alt="{{ $judul }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                                     No Image
@@ -187,14 +266,14 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center space-x-2 bg-gray-100 p-2 sm:p-3 rounded-lg text-gray-700">
-                                <svg class="w-5 h-5 {{ $isBorrowed ? 'text-red-500' : 'text-green-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-center space-x-2 bg-gray-100 p-3 rounded-lg text-gray-700 w-full sm:w-64">
+                                <svg class="w-5 h-5 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] sm:text-xs text-gray-500">Tanggal Pengembalian</span>
-                                    <span class="font-medium text-sm sm:text-base {{ $isBorrowed ? 'text-red-600' : 'text-green-600' }}">
+                                    <span class="text-xs text-gray-500">{{ $labelTanggal }}</span>
+                                    <span class="font-medium {{ $dateColor }}">
                                         {{ $tanggalKembaliText }}
                                     </span>
                                 </div>
@@ -202,8 +281,8 @@
                         </div>
 
                         <div class="flex items-center justify-center sm:justify-end w-full sm:w-40">
-                            <span class="{{ $statusColor }} text-white font-bold py-0.5 px-1 text-[8px] sm:py-2 sm:px-4 sm:text-base rounded-lg w-full text-center">
-                                {{ strtoupper($pinjam->status) }}
+                            <span class="{{ $statusColor }} text-white font-bold py-2 px-4 rounded-lg w-full text-center">
+                                {{ $statusText }}
                             </span>
                         </div>
 

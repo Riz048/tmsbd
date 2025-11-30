@@ -14,18 +14,28 @@
     </ul>
 
     <div>
-        @guest
+        @if(session('logged_in'))
+            <div class="flex items-center space-x-3">
+
+                {{-- Nama user --}}
+                <span class="text-primary-blue font-semibold text-sm">
+                    {{ session('user_name') }} 👋
+                </span>
+
+                {{-- Tombol logout kecil --}}
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="text-red-600 hover:text-red-800 text-sm" title="Logout">
+                        ⏻
+                    </button>
+                </form>
+            </div>
+        @else
             <a href="{{ route('login') }}"
             class="bg-primary-blue hover:bg-dark-blue text-white text-sm font-semibold py-2 px-5 rounded">
                 Login
             </a>
-        @endguest
-
-        @auth
-            <span class="text-primary-blue font-semibold text-sm">
-                {{ Auth::user()->nama }} 👋
-            </span>
-        @endauth
+        @endif
     </div>
 
 </nav>

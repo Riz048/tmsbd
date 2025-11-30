@@ -16,7 +16,7 @@
 
             {{-- COVER --}}
             <div class="w-full md:w-[250px] flex-shrink-0">
-                <img src="{{ asset('storage/' . $buku->gambar) }}" 
+                <img src="{{ bookImage($buku->gambar) }}"
                      alt="Cover {{ $buku->judul }}"
                      class="w-full h-[300px] object-cover rounded shadow-2xl">
             </div>
