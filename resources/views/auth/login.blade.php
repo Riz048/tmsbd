@@ -70,11 +70,20 @@
                         {{-- FORM LOGIN --}}
                         <div class="col-lg-6 p-5">
 
-                            @if ($errors->has('login'))
-                                <div class="mb-4 p-3 rounded-lg text-white text-center" 
-                                    style="background:#ff6b6b; font-weight:600;">
-                                    {{ $errors->first('login') }}
+                            {{-- ALERT ERROR AUTO-HIDE --}}
+                            @if (session('login_error'))
+                                <div id="alert-error" 
+                                    class="mb-4 p-3 rounded text-white text-center"
+                                    style="background:#ff4444; font-weight:600;">
+                                    {{ session('login_error') }}
                                 </div>
+
+                                <script>
+                                    setTimeout(() => {
+                                        const alert = document.getElementById('alert-error');
+                                        if (alert) alert.style.display = 'none';
+                                    }, 3000);
+                                </script>
                             @endif
 
                             <div class="text-center mb-4">

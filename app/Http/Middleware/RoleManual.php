@@ -4,21 +4,22 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class RoleManual
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle($request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        $userRole = session('role');
+        // Pastikan user sudah login
+        if (!session('logged_in')) {
+            return redirect('/login');
+        }
 
-        if (!$userRole || !in_array($userRole, $roles)) {
-            abort(403, 'Akses ditolak.');
+        // Ambil role user dari session
+        $currentRole = session('role');
+
+        // Jika role TIDAK ada di daftar role yang diperbolehkan → tolak
+        if (!in_array($currentRole, $roles)) {
+            abort(403, 'Akses ditolak');
         }
 
         return $next($request);

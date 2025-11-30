@@ -4,45 +4,29 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\KepalaPerpusController;
+use App\Http\Controllers\KepsekController;
+use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\ReferensiController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\RoleMiddleware;
 
-// ===============
-// HALAMAN PUBLIC
-// ===============
 
-// Beranda user
+// =======================
+// PUBLIC AREA
+// =======================
+
 Route::get('/', [BukuController::class, 'index'])->name('beranda');
 
-// Detail buku (public)
 Route::get('/detail-buku/{id}', [BukuController::class, 'detail'])
     ->name('detail.buku');
 
-// Kategori
-    Route::get('/kategori/{tipe}', [CategoryController::class, 'show'])
+Route::get('/kategori/{tipe}', [CategoryController::class, 'show'])
     ->name('user.kategori.show');
 
-// Kategori Fiksi (masih statis → nanti bisa dibuat dinamis)
-Route::view('/novel', 'user.referensi.kategori.fiksi.novel')->name('user.kategori.novel');
-Route::view('/komik', 'user.referensi.kategori.fiksi.komik')->name('user.kategori.komik');
-Route::view('/mitos', 'user.referensi.kategori.fiksi.mitos')->name('user.kategori.mitos');
-Route::view('/fabel', 'user.referensi.kategori.fiksi.fabel')->name('user.kategori.fabel');
-Route::view('/cerpen', 'user.referensi.kategori.fiksi.cerpen')->name('user.kategori.cerpen');
-Route::view('/legenda', 'user.referensi.kategori.fiksi.legenda')->name('user.kategori.legenda');
 
-// Non-fiksi – sesuaikan nama view-nya
-Route::view('/ilmu-sosial', 'user.referensi.kategori.nonfiksi.sosial')->name('buku.ilmu-sosial');
-Route::view('/ilmu-terapan', 'user.referensi.kategori.nonfiksi.terapan')->name('buku.ilmu-terapan');
-Route::view('/ilmu-murni', 'user.referensi.kategori.nonfiksi.murni')->name('buku.ilmu-murni');
-Route::view('/bahasa', 'user.referensi.kategori.nonfiksi.bahasa')->name('buku.bahasa');
-Route::view('/geografi-sejarah', 'user.referensi.kategori.nonfiksi.geosejarah')->name('buku.geografi-sejarah');
-Route::view('/ilmu-agama', 'user.referensi.kategori.nonfiksi.agama')->name('buku.ilmu-agama');
-
-
-// ===============
-// AUTH USER
-// ===============
+// =======================
+// AUTH
+// =======================
 
 Route::get('/login', [AuthController::class, 'login'])
     ->middleware('guest.manual')
@@ -57,9 +41,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 
-// =========================
-// HALAMAN USER (SISWA/GURU)
-// =========================
+// =======================
+// USER (SISWA & GURU)
+// =======================
 
 Route::middleware(['auth.manual', 'role.manual:siswa,guru'])->group(function () {
     Route::get('/riwayat', [UserController::class, 'riwayat'])
@@ -71,3 +55,66 @@ Route::get('/referensi', [ReferensiController::class, 'home'])
 
 Route::get('/referensi/{kategori}', [ReferensiController::class, 'kategori'])
     ->name('user.referensi.kategori');
+
+
+// =======================
+// PETUGAS AREA
+// =======================
+
+Route::middleware(['auth.manual', 'role.manual:petugas'])->group(function () {
+
+    Route::get('/petugas/dashboard', [PetugasController::class, 'dashboard'])
+        ->name('petugas.dashboard');
+
+    Route::get('/petugas/buku/tambah', [PetugasController::class, 'tambahBuku'])
+        ->name('petugas.buku.tambah');
+
+    Route::post('/petugas/buku/tambah', [PetugasController::class, 'simpanBuku'])
+        ->name('petugas.buku.simpan');
+
+    Route::get('/petugas/peminjaman', [PetugasController::class, 'peminjaman'])
+        ->name('petugas.peminjaman');
+
+    Route::get('/petugas/pengembalian', [PetugasController::class, 'pengembalian'])
+        ->name('petugas.pengembalian');
+});
+
+
+// =======================
+// KEPALA PERPUSTAKAAN
+// =======================
+
+Route::middleware(['auth.manual', 'role.manual:kep_perpus'])->group(function () {
+
+    Route::get('/kepperpus/dashboard', [KepalaPerpusController::class, 'dashboard'])
+        ->name('kepperpus.dashboard');
+
+    Route::get('/kepperpus/petugas', [KepalaPerpusController::class, 'dataPetugas'])
+        ->name('kepperpus.petugas');
+
+    Route::get('/kepperpus/laporan/peminjaman', [KepalaPerpusController::class, 'laporanPeminjaman'])
+        ->name('kepperpus.laporan.peminjaman');
+
+    Route::get('/kepperpus/laporan/pengembalian', [KepalaPerpusController::class, 'laporanPengembalian'])
+        ->name('kepperpus.laporan.pengembalian');
+});
+
+
+// =======================
+// KEPALA SEKOLAH
+// =======================
+
+Route::middleware(['auth.manual', 'role.manual:kepsek'])->group(function () {
+
+    Route::get('/kepsek/dashboard', [KepsekController::class, 'dashboard'])
+        ->name('kepsek.dashboard');
+
+    Route::get('/kepsek/akun', [KepsekController::class, 'manajemenAkun'])
+        ->name('kepsek.akun');
+
+    Route::get('/kepsek/validasi', [KepsekController::class, 'validasiAkademik'])
+        ->name('kepsek.validasi');
+
+    Route::get('/kepsek/laporan', [KepsekController::class, 'laporan'])
+        ->name('kepsek.laporan');
+});

@@ -22,12 +22,12 @@ class AuthController extends Controller
         // Cari user berdasarkan username
         $user = User::where('username', $request->username)->first();
 
-        // Kalau tidak ditemukan atau password beda → gagal
-        if (!$user || $user->password !== $request->password) {
-            return back()->withErrors(['login' => 'Username atau password salah.']);
+        // Jika user tidak ada atau password salah
+        if (!$user || !password_verify($request->password, $user->password)) {
+            return back()->with('login_error', 'Username atau password salah.');
         }
 
-        // Simpan user ke session manual
+        // Simpan user ke session
         session([
             'logged_in' => true,
             'user_id'   => $user->id_user,
@@ -35,18 +35,31 @@ class AuthController extends Controller
             'user_name' => $user->nama,
         ]);
 
-        return redirect()->intended('/');
+        // Redirect berdasarkan role
+        switch ($user->role) {
+
+            case 'siswa':
+            case 'guru':
+                return redirect('/');
+
+            case 'petugas':
+                return redirect('/petugas/dashboard');
+
+            case 'kep_perpus':
+                return redirect('/kepperpus/dashboard');
+
+            case 'kepsek':
+                return redirect('/kepsek/dashboard');
+
+            default:
+                session()->flush();
+                return redirect('/login')->withErrors(['login' => 'Role tidak dikenali.']);
+        }
     }
 
     public function logout(Request $request)
     {
-        session()->forget('logged_in');
-        session()->forget('user_id');
-        session()->forget('role');
-        session()->forget('user_name');
-
-        $request->session()->flush();
-
+        session()->flush();
         return redirect('/login');
     }
 }
